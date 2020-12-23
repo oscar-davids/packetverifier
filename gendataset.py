@@ -32,7 +32,7 @@ if __name__ == "__main__":
     binit = False
     gencount = 0
 
-    outcsv = "testlist" + datetime.datetime.now().strftime("d%H%M") + ".csv"
+    outcsv = "testlist" + str(maxcount) + datetime.datetime.now().strftime("d%H%M") + ".csv"
     fileout = open(outcsv, 'w', newline='')
     wr = csv.writer(fileout)
     wr.writerow(['filepath', 'width', 'height', 'fps', 'bitrate', 'profile', 'devmode', 'framecount', 'indices'])

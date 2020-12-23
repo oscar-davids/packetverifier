@@ -33,9 +33,9 @@ def perf_measure(y_actual, y_hat):
     return(TP, FP, TN, FN)
 
 def main():
-    parser = argparse.ArgumentParser(description='psnr calculation parser.')
-    parser.add_argument('--infile', type=str, help='select directory', default='psnrresult_total.csv')
-    parser.add_argument('--feature', type=str, help='select directory', default='psnr')
+    parser = argparse.ArgumentParser(description='roc calculation parser.')
+    parser.add_argument('--infile', type=str, help='select directory', default='score.csv')
+    parser.add_argument('--feature', type=str, help='select directory', default='cosdis')
     args = parser.parse_args()
 
     infile = args.infile
