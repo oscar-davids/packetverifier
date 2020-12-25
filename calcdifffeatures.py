@@ -2,6 +2,7 @@ import os
 import argparse
 import datetime
 import csv
+import numpy as np
 from verifier import Verifier
 
 if __name__ == "__main__":
@@ -19,30 +20,41 @@ if __name__ == "__main__":
     fileout = open(outcsv, 'w', newline='')
     wr = csv.writer(fileout)
     wr.writerow(['filepath', 'width', 'height', 'fps', 'bitrate',
-                 'profile', 'devmode', 'framecount', 'indices', 'outpath', 'position', 'length', 'features'])
+                 'profile', 'devmode', 'framecount', 'indices', 'outpath', 'position', 'length', 'features', 'target'])
     max_samples = 10
     debug = False
-
+    logcount = 0
     verifier = Verifier(10, 'verification-metamodel-2020-07-06.tar.xz', False, False, debug)
 
     brheader = False
     with open(infile) as csvfile:
         rd = csv.reader(csvfile, delimiter=',')
         for row in rd:
-            print(row)
+            print( str(logcount) + "-----" + "start")
+            logcount = logcount + 1
             wrow = []
             if brheader == False:
                 brheader = True
             else:
                 srcfile = srcdir + "/" + row[0]
-                rendfile = renddir + "/" + row[9]
+                rendfile = renddir + "/" + row[9].replace('"','')
+                indicies = row[8]
 
                 file_stats = os.stat(srcfile)
 
-                difffeatures = verifier.getfeature(srcfile, [{'uri': rendfile}])
+                result = verifier.getfeature(srcfile, [{'uri': rendfile}], indicies)
+
+                difffeatures = np.array2string(result[0]['difffeature'], precision=10, separator=',',
+                                suppress_small=False)
+                difffeatures = difffeatures.replace('[','')
+                difffeatures = difffeatures.replace(']', '')
+                difffeatures = difffeatures.replace('\n', '')
+                difffeatures = '"' + difffeatures + '"'
 
                 wrow = row
                 wrow.append(difffeatures)
+                wrow.append(result[0]['tamper'])
+
                 wr.writerow(wrow)
 
     fileout.close()
