@@ -53,7 +53,8 @@ def main():
             for row in reader:
                 #print(row['psnr'], row['target'])
                 scores.append( float(row[feature]))
-                lables.append( 1- int(row['target']))
+                #lables.append( 1- int(row['target']))
+                lables.append(int(row['target']))
 
     smax = float(max(scores))
 
@@ -90,7 +91,8 @@ def main():
     pp.show()
 
 
-    for threval in np.arange(0.0001, 0.1, 0.0001):
+    #for threval in np.arange(0.0001, 0.1, 0.0001):
+    for threval in np.arange(0.00001, 0.00006, 0.000001):
         predictval = (ascores > threval)
 
         TP, FP, TN, FN = perf_measure(alable, predictval)
