@@ -92,7 +92,7 @@ def main():
 
 
     #for threval in np.arange(0.0001, 0.1, 0.0001):
-    for threval in np.arange(0.00001, 0.00006, 0.000001):
+    for threval in np.arange(1.0, 100.0, 1.0):
         predictval = (ascores > threval)
 
         TP, FP, TN, FN = perf_measure(alable, predictval)

@@ -51,7 +51,7 @@ def write_distfile(incsv1, ofile, npdist, target):
     fileout = open(ofile, 'w', newline='')
     wr = csv.writer(fileout)
     wr.writerow(['filepath', 'width', 'height', 'fps', 'bitrate', 'profile', 'devmode', 'framecount',
-                 'indices','rendpath', 'position', 'length', 'features', 'target', 'distance', 'target'])
+                 'indices','rendpath', 'position', 'length', 'features', 'orgtarget', 'distance', 'target'])
 
     brheader = False
     index = 0
