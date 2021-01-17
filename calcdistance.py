@@ -46,6 +46,19 @@ def covertdigitlist(slist, index):
 
     return listdisit
 
+def getdiffids(slist, slist2, index, devdiff):
+    listdisit = []
+    for i in range(0, len(slist)):
+        if devdiff > 0:
+            if slist[i][index] == slist2[i][index]:
+                listdisit.append(False)
+            else:
+                listdisit.append(True)
+        else:
+            listdisit.append(True)
+
+    return listdisit
+
 def write_distfile(incsv1, ofile, npdist, target):
 
     fileout = open(ofile, 'w', newline='')
@@ -78,12 +91,14 @@ if __name__ == "__main__":
     parser.add_argument("--target", type=int, default=0, help='target value for true or false')
     parser.add_argument("--ofile", default="", help="distance matrix for .")
     parser.add_argument("--type",type=int, default=0, help="parameter that distinguish seek position from diff feature")
+    parser.add_argument("--devdiff", type=int, default=0, help='target value for true or false')
     args = parser.parse_args()
     incsv1 = args.inf1
     incsv2 = args.inf2
     target = args.target
     ofile = args.ofile
     outtype = args.type
+    devdiff = args.devdiff
     if target is not None:
         if ofile == "":
             ofile = "distance_" + datetime.datetime.now().strftime("d%H%M") + ".csv"
@@ -98,11 +113,18 @@ if __name__ == "__main__":
     assert(len(listvall) == len(listval2))
 
     if outtype == 0: #position type
-        posidx = fieldnum - 2
+        posidx = fieldnum - 4
         listpos1 = numpy.array(covertdigitlist(listvall,posidx))
         listlen1 = numpy.array(covertdigitlist(listvall,posidx+1))
         listpos2 = numpy.array(covertdigitlist(listval2,posidx))
         listlen2 = numpy.array(covertdigitlist(listval2,posidx+1))
+
+        listmodfilter = numpy.array(getdiffids(listvall, listval2, 6, devdiff)) #devmode
+
+        listpos1 = listpos1[listmodfilter]
+        listlen1 = listlen1[listmodfilter]
+        listpos2 = listpos2[listmodfilter]
+        listlen2 = listlen2[listmodfilter]
 
         diffpos = listpos1 - listpos2
         difflen = listlen1 - listlen2
@@ -139,6 +161,7 @@ if __name__ == "__main__":
                          'indices', 'position', 'length', 'cosdis', 'target'])
 
             brheader = False
+            cvindex = 0
             index = 0
             with open(incsv1) as csvfile:
                 rd = csv.reader(csvfile, delimiter=',')
@@ -148,11 +171,14 @@ if __name__ == "__main__":
                     if brheader == False:
                         brheader = True
                     else:
-                        wrow = row
-                        wrow.append(npdist[index])
-                        wrow.append(target)
-                        wr.writerow(wrow)
-                        index = index + 1
+                        if listmodfilter[cvindex] == True:
+                            wrow = row
+                            wrow.append(npdist[index])
+                            wrow.append(target)
+                            wr.writerow(wrow)
+                            index = index + 1
+
+                        cvindex = cvindex + 1
 
             fileout.close()
     else:
