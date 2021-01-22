@@ -23,7 +23,7 @@ if __name__ == "__main__":
     vprofilenum = len(vprofiles)
     devmodes = ["nv","sw"]
 
-    fileset = [file for file in glob.glob(testdir + "/**/*.*", recursive=True)]
+    fileset = [file for file in glob.glob(testdir + "/**/*.mp4", recursive=True)]
     filecount = len(fileset) - 1
     if filecount < 1:
         print('There is no video files in your selected directory!')
@@ -43,7 +43,8 @@ if __name__ == "__main__":
         ##for file in fileset:
             #fname = os.path.basename(file)
 
-        findex = gencount % filecount
+        #findex = gencount % filecount
+        findex = random.randrange(0, filecount)
         file = fileset[findex]
         fname = os.path.basename(file)
 
@@ -60,6 +61,8 @@ if __name__ == "__main__":
             dmode = random.choice(devmodes)
             frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             #generate randomize 10 indices
+            if width < 960:
+                continue
 
             indexes = np.sort(np.random.choice(frame_count, max_posnum, False))
             #exclude 0
