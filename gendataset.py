@@ -32,7 +32,7 @@ if __name__ == "__main__":
     binit = False
     gencount = 0
 
-    outcsv = "testlist" + str(maxcount) + datetime.datetime.now().strftime("d%H%M") + ".csv"
+    outcsv = "testlist" + str(maxcount) + datetime.datetime.now().strftime("_%d%H%M") + ".csv"
     fileout = open(outcsv, 'w', newline='')
     wr = csv.writer(fileout)
     wr.writerow(['filepath', 'width', 'height', 'fps', 'bitrate', 'profile', 'devmode', 'framecount', 'indices'])
@@ -48,15 +48,17 @@ if __name__ == "__main__":
         file = fileset[findex]
         fname = os.path.basename(file)
 
-        print(fname + ": ")
+        print(gencount , fname + ": " )
 
         try:
             cap = cv2.VideoCapture(file, cv2.CAP_FFMPEG)
             frelpath = file.replace(testdir + "\\", "")
+            frelpath = frelpath.replace("\\", "/")
             width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
             fps = cap.get(cv2.CAP_PROP_FPS)
-            bitrate = int(cap.get(cv2.CAP_PROP_BITRATE))
+            #bitrate = int(cap.get(cv2.CAP_PROP_BITRATE))
+            bitrate = 0
             vproid = random.choice(vprofiles)
             dmode = random.choice(devmodes)
             frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
